@@ -1,0 +1,74 @@
+Program 9
+Aim: To implement the K-Nearest Neighbour algorithm on iris dataset to check whether the algorithm predicts the output correct or not.
+Description:
+The k-nearest neighbors algorithm, also known as KNN or k-NN, is a non-parametric, supervised learning classifier, which uses proximity to make classifications or predictions about the grouping of an individual data point. While it can be used for either regression or classification problems, it is typically used as a classification algorithm, working off the assumption that similar points can be found near one another.
+Algorithm:
+The K-NN working can be explained on the basis of the below algorithm:
+o	Step-1: Select the number K of the neighbors
+o	Step-2: Calculate the Euclidean distance of K number of neighbors
+o	Step-3: Take the K nearest neighbors as per the calculated Euclidean distance.
+o	Step-4: Among these k neighbors, count the number of the data points in each category.
+o	Step-5: Assign the new data points to that category for which the number of the neighbor is maximum.
+o	Step-6: Our model is ready.
+
+Program:
+
+    from sklearn.datasets import load_iris
+    from sklearn.neighbors import KNeighborsClassifier
+    from sklearn.model_selection import train_test_split
+    import numpy as np
+
+    dataset=load_iris()
+    #print(dataset)
+    X_train,X_test,y_train,y_test=train_test_split(dataset["data"],dataset["target"],random_state=0)
+
+    kn=KNeighborsClassifier(n_neighbors=1)
+    kn.fit(X_train,y_train)
+
+    for i in range(len(X_test)):
+        x=X_test[i]
+        x_new=np.array([x])
+        prediction=kn.predict(x_new)
+        print("TARGET=",y_test[i],dataset["target_names"][y_test[i]],"PREDICTED=",prediction,dataset["target_names"][prediction])
+    print(kn.score(X_test,y_test))
+
+Output:
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 2 virginica PREDICTED= [2] ['virginica']
+TARGET= 1 versicolor PREDICTED= [1] ['versicolor']
+TARGET= 0 setosa PREDICTED= [0] ['setosa']
+TARGET= 1 versicolor PREDICTED= [2] ['virginica']
+0.9736842105263158

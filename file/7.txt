@@ -1,0 +1,58 @@
+Program 7
+Aim: Applying Bayesian network on heart disease to find a correct classification label.
+Description:
+In Bayesian networks, we deal with a number of interrelated (random) variables. We explore how the joint distribution of the variables can be described by exploiting what we know about their natural interrelationships via conditional distributions. We use graph theory to explain their interrelationship. If data are available on the random variables, we fit a Bayesian network model which describes their relationship in a succinct way. Bayesian networks are a marriage between probability theory and graphs. One of the main goals in Bayesian networks is prediction. Bayes theorem plays a crucial part in this connection.
+Algorithm:
+There are three main steps to create a BN :
+1. First, identify which are the main variable in the problem to solve. Each variable corresponds to a node of the network. It is important to choose the number states for each variable, for instance, there are usually two states (true or false).
+2. Second, define structure of the network, that is, the causal relationships between all the variables (nodes).
+3. Third, define the probability rules governing the relationships between the variables.
+
+Program:
+
+    import numpy as np
+    import csv
+    import pandas as pd
+    from pgmpy.models import BayesianModel
+    from pgmpy.estimators import MaximumLikelihoodEstimatorfrom pgmpy.inference import
+    VariableElimination
+    #read Cleveland Heart Disease data
+    heartDisease = pd.read_csv('heart.csv')
+    heartDisease = heartDisease.replace('?',np.nan)
+    #display the data
+    print('Few examples from the dataset are given below') print(heartDisease.head())
+    #Model Bayesian Network
+    Model=BayesianModel([('age','trestbps'),('age','fbs'),
+    ('sex','trestbps'),('exang','trestbps'),('trestbps','heartdise
+    ase'),('fbs','heartdisease'),('heartdisease','restecg'),
+    ('heartdisease','thalach'),('heartdisease','chol')])
+    #Learning CPDs using Maximum Likelihood Estimators
+    print('\n Learning CPD using Maximum likelihood estimators')
+    model.fit(heartDisease,estimator=MaximumLikelihoodEstimator)
+    # Inferencing with Bayesian Network
+    print('\n Inferencing with Bayesian Network:') HeartDisease_infer = VariableElimination(model)
+    #computing the Probability of HeartDisease given Age
+    print('\n 1. Probability of HeartDisease given Age=30')
+    q=HeartDisease_infer.query(variables=['heartdisease'],evidence
+    ={'age':28})
+    print(q['heartdisease'])
+    #computing the Probability of HeartDisease given cholesterol print('\n 2. Probability of HeartDisease
+    given cholesterol=100') q=HeartDisease_infer.query(variables=['heartdisease'],evidence
+    ={'chol':100})
+    print(q['heartdisease'])
+
+Output:
+
+Inferencing with Bayesian Network:
+ 1. Probability of HeartDisease given Age=28 ╒════════════════╤═════════════════════╕ │ heartdisease │ phi(heartdisease) │ ╞════════════════╪═════════════════════╡ │ heartdisease_0 │ 0.6791 │ ├────────────────┼─────────────────────┤ │ heartdisease_1 │ 0.1212 │ ├────────────────┼─────────────────────┤ │ heartdisease_2 │ 0.0810 │ ├────────────────┼─────────────────────┤ │ heartdisease_3 │ 0.0939 │ ├────────────────┼─────────────────────┤ │ heartdisease_4 │ 0.0247 │ ╘════════════════╧═════════════════════╛ 
+2. Probability of Heart Disease given cholesterol=100 ╒════════════════╤═════════════════════╕ │ heartdisease │ phi(heartdisease) │ ╞════════════════╪═════════════════════╡ │ heartdisease_0 │ 0.5400 │ ├────────────────┼─────────────────────┤ │ heartdisease_1 │ 0.1533 │ ├────────────────┼─────────────────────┤ │ heartdisease_2 │ 0.1303 │ ├────────────────┼─────────────────────┤ │ heartdisease_3 │ 0.1259 │ ├────────────────┼─────────────────────┤ │ heartdisease_4 │ 0.0506 │ ╘════════════════╧═══════------------------------
+
+Dataset:
+age 	sex 	cp 	trestbps 	chol 	fbs 	restec g 	thalac h 	exan g 	oldpea k 	slop e 	ca 	thal 	Heartdiseas e 
+63 	1 	1 	145 	233 	1 	2 	150 	0 	2.3 	3 	0 	6 	0 
+67 	1 	4 	160 	286 	0 	2 	108 	1 	1.5 	2 	3 	3 	2 
+67 	1 	4 	120 	229 	0 	2 	129 	1 	2.6 	2 	2 	7 	1 
+41 	0 	2 	130 	204 	0 	2 	172 	0 	1.4 	1 	0 	3 	0 
+62 	0 	4 	140 	268 	0 	2 	160 	0 	3.6 	3 	2 	3 	3 
+60 	1 	4 	130 	206 	0 	2 	132 	1 	2.4 	2 	2 	7 	4 
+

@@ -1,0 +1,114 @@
+Program 2:
+Aim: Applying the candidate elimination algorithm to find out whether the set of all hypothesis are consistent or not.
+Description:
+The candidate elimination algorithm incrementally builds the version space given a hypothesis space H and a set E of examples. The examples are added one by one; each example possibly shrinks the version space by removing the hypotheses that are inconsistent with the example. The candidate elimination algorithm does this by updating the general and specific boundary for each new example. 
+Algorithm:
+Step1: Load Data set
+Step2: Initialize General Hypothesis  and Specific  Hypothesis.
+Step3: For each training example  
+Step4: If example is positive example  
+          if attribute_value == hypothesis_value:
+             Do nothing  
+          else:
+             replace attribute value with '?' (Basically generalizing it)
+Step5: If example is Negative example  
+          Make generalize hypothesis more specific.
+
+Program:
+
+import numpy as np
+import pandas as pd
+data = pd.read_csv('/content/data2.csv')
+print(" Given data : \n\n",data)
+concepts = np.array(data.iloc[:,0:-1])
+print("\nInstances are:\n\n",concepts)
+target = np.array(data.iloc[:,-1])
+print("\nTarget Values are: ",target)
+def learn(concepts, target):
+ specific_h = concepts[0].copy()
+ print("\nInitialization of specific_h and genearal_h")
+ print("\nSpecific Boundary: ", specific_h)
+ general_h = [["?" for i in range(len(specific_h))] for i in range(len(specific_h))]
+ print("\nGeneric Boundary: ",general_h)
+ for i, h in enumerate(concepts):
+  print("\nInstance", i+1 , "is ", h)
+  if target[i] == "yes":
+    print("Instance is Positive ")
+  for x in range(len(specific_h)):
+    if h[x]!= specific_h[x]:
+      specific_h[x] ='?'
+      general_h[x][x] ='?'
+      if target[i] == "no":
+        print("Instance is Negative ")
+  for x in range(len(specific_h)):
+    if h[x]!= specific_h[x]:
+      general_h[x][x] = specific_h[x]
+    else:
+      general_h[x][x] = '?'
+
+ print("Specific Bundary after ", i+1, "Instance is ", specific_h)
+ print("Generic Boundary after ", i+1, "Instance is ", general_h)
+ print("\n")
+ indices = [i for i, val in enumerate(general_h) if val == ['?', '?', '?', '?', '?', '?']]
+ for i in indices:
+  general_h.remove(['?', '?', '?', '?', '?', '?'])
+ return specific_h, general_h
+s_final, g_final = learn(concepts, target)
+print("Final Specific_h: ", s_final, sep="\n")
+print("Final General_h: ", g_final, sep="\n")
+
+Output:
+Given data : 
+
+    S.No    Sky Air temp Humidity    Wind Water Forecast Enjoy Sport
+0     1  Suuny     Warm   Normal  Strong  Warm     Same         Yes
+1     2  Sunny     Warm     High  Strong  Warm     Same         Yes
+2     3  Rainy     Cold     High  Strong  Warm   Change          No
+3     4  Sunny     Warm     High  Strong  Cool   Change         Yes
+
+Instances are:
+
+ [[1 'Suuny' 'Warm' 'Normal' 'Strong' 'Warm' 'Same']
+ [2 'Sunny' 'Warm' 'High' 'Strong' 'Warm' 'Same']
+ [3 'Rainy' 'Cold' 'High' 'Strong' 'Warm' 'Change']
+ [4 'Sunny' 'Warm' 'High' 'Strong' 'Cool' 'Change']]
+
+Target Values are:  ['Yes' 'Yes' 'No' 'Yes']
+
+Initialization of specific_h and genearal_h
+
+Specific Boundary:  [1 'Suuny' 'Warm' 'Normal' 'Strong' 'Warm' 'Same']
+
+Generic Boundary:  [['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?']]
+
+Instance 1 is  [1 'Suuny' 'Warm' 'Normal' 'Strong' 'Warm' 'Same']
+
+Instance 2 is  [2 'Sunny' 'Warm' 'High' 'Strong' 'Warm' 'Same']
+
+Instance 3 is  [3 'Rainy' 'Cold' 'High' 'Strong' 'Warm' 'Change']
+
+Instance 4 is  [4 'Sunny' 'Warm' 'High' 'Strong' 'Cool' 'Change']
+Specific Bundary after  4 Instance is  ['?' '?' '?' '?' 'Strong' '?' '?']
+Generic Boundary after  4 Instance is  [['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?']]
+
+
+Final Specific_h: 
+['?' '?' '?' '?' 'Strong' '?' '?']
+Final General_h: 
+[['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?'], ['?', '?', '?', '?', '?', '?', '?']]
+________________________________________
+Dataset:
+
+
+S.NO. 	
+SKY 	 
+AIR TEMP 	 
+HUMIDITY 	 
+WIND 	 
+WATER 	 
+FORECAST 	 
+ENJOY SPORT 
+1. 	Sunny  	Warm 	Normal 	Strong 	Warm 	Same  	Yes 
+2. 	Sunny 	Warm 	High 	Strong 	Warm 	Same 	Yes 
+3. 	Rainy 	Cold 	High 	Strong 	Warm 	Change 	No 
+4. 	Sunny 	Warm 	High 	Strong 	Cool 	Change 	Yes 

@@ -1,0 +1,70 @@
+Program 10
+Aim: To Implement the non-parametric locally weighted regression algorithm to fit the data points by using the appropriate datset.
+Description:
+Locally Weighted Linear Regression (LWLR) is a non-parametric regression technique that aims to fit a linear regression model to a dataset by giving more weight to nearby data points. For example, consider a dataset of temperature readings and corresponding energy consumption. LWLR can be used to predict the energy consumption for a given temperature reading by fitting a linear regression model to the training data, where the weight assigned to each training data point is inversely proportional to its distance from the query point. This means that training data points that are closer to the query point will have a higher weight and contribute more to the linear regression model.
+Algorithm:
+•	Read the Given data Sample to X and the curve (linear or non linear) to Y.
+•	Set the value for Smoothening parameter or Free parameter say τ
+•	Set the bias /Point of interest set x0 which is a subset of X.
+•	Determine the weight matrix using :
+•	Determine the value of model term parameter β using:
+•	Prediction = x0*β
+
+Program:
+import matplotlib.pyplot as plt
+import pandas as pd
+import numpy as np
+def kernel(point, xmat, k):
+ m,n = np.shape(xmat)
+ weights = np.mat(np.eye((m)))
+ for j in range(m):
+  diff = point - X[j]
+  weights[j,j] = np.exp(diff*diff.T/(-2.0*k**2))
+  return weights
+def localWeight(point, xmat, ymat, k):
+ wei = kernel(point,xmat,k)
+ W = (X.T*(wei*X)).I*(X.T*(wei*ymat.T))
+ return W
+
+def localWeightRegression(xmat, ymat, k):
+ m,n = np.shape(xmat)
+ ypred = np.zeros(m)
+ for i in range(m):
+  ypred[i] =xmat[i]*localWeight(xmat[i],xmat,ymat,k)
+  return ypred
+
+# load data points
+data = pd.read_csv('/content/restaurant.csv')
+bill = np.array(data.total_bill)
+tip = np.array(data.tip)
+#preparing and add 1 in bill
+mbill = np.mat(bill)
+mtip = np.mat(tip)
+m= np.shape(mbill)[1]
+one = np.mat(np.ones(m))
+X = np.hstack((one.T,mbill.T))
+#set k here
+ypred = localWeightRegression(X,mtip,0.5)
+SortIndex = X[:,1].argsort(0)
+xsort = X[SortIndex][:,0]
+fig = plt.figure()
+ax = fig.add_subplot(1,1,1)
+ax.scatter(bill,tip, color='green')
+ax.plot(xsort[:,1],ypred[SortIndex], color = 'red', linewidth=5)
+plt.xlabel('Total bill')
+plt.ylabel('Tip')
+plt.show();
+
+Dataset:
+    	total_bill	     tip	sex	smoker	day	time	     size
+0	16.99	1.01	Female	No	Sun	Dinner	2
+1	10.34	1.66	Male	No	Sun	Dinner	3
+2	21.01	3.5	Male	No	Sun	Dinner	3
+3	23.68	3.31	Male	No	Sun	Dinner	2
+4	24.59	3.61	Female	No	Sun	Dinner	4
+5	22.67	4.34	Female	No	Sun	Dinner	3
+239	29.03	5.92	Male	No	Sat	Dinner	3
+240	27.18	2	Female	Yes	Sat	Dinner	2
+241	22.67	2	Male	Yes	Sat	Dinner	2
+242	17.82	1.75	Male	No	Sat	Dinner	2
+

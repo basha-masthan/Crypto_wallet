@@ -1,0 +1,70 @@
+Program 8
+Aim: Comparing between EM algorithm and K-Means algorithm to find which of them is best algorithm.
+Description:
+EM is a very general algorithm for learning models with hidden variables. EM optimizes the marginal likelihood of the data (likelihood with hidden variables summed out). Like K-means, it's iterative, alternating two steps, E and M, which correspond to estimating hidden variables given the model and then estimating the model given the hidden variable estimates. Unlike K-means, the cluster assignments in EM for Gaussian mixtures are soft. Let's consider the simplest case, closest to K-means.
+Algorithm:
+K-means:
+Step 1: Select the Number of Clusters, k. ...
+Step 2: Select k Points at Random. ...
+Step 3: Make k Clusters. ...
+Step 4: Compute New Centroid of Each Cluster. ...
+Step 5: Assess the Quality of Each Cluster. ...
+Step 6: Repeat Steps 3–5.
+EM Algorithm:
+o	1st Step: The very first step is to initialize the parameter values. Further, the system is provided with incomplete observed data with the assumption that data is obtained from a specific model.
+o	2nd Step: This step is known as Expectation or E-Step, which is used to estimate or guess the values of the missing or incomplete data using the observed data. Further, E-step primarily updates the variables.
+o	3rd Step: This step is known as Maximization or M-step, where we use complete data obtained from the 2nd step to update the parameter values. Further, M-step primarily updates the hypothesis.
+o	4th step: The last step is to check if the values of latent variables are converging or not. If it gets "yes", then stop the process; else, repeat the process from step 2 until the convergence occurs.
+Program:
+from sklearn.cluster import KMeans
+from sklearn import preprocessing
+from sklearn.mixture import GaussianMixture
+from sklearn.datasets import load_iris
+import sklearn.metrics as sm
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+dataset=load_iris()
+# print(dataset)
+
+X=pd.DataFrame(dataset.data)
+X.columns=['Sepal_Length','Sepal_Width','Petal_Length','Petal_Width']
+y=pd.DataFrame(dataset.target)
+y.columns=['Targets']
+# print(X)
+
+plt.figure(figsize=(14,7))
+colormap=np.array(['red','lime','black'])
+
+# REAL PLOT
+plt.subplot(1,3,1)
+plt.scatter(X.Petal_Length,X.Petal_Width,c=colormap[y.Targets],s=40)
+plt.title('Real')
+
+# K-PLOT
+plt.subplot(1,3,2)
+model=KMeans(n_clusters=3)
+model.fit(X)
+predY=np.choose(model.labels_,[0,1,2]).astype(np.int64)
+plt.scatter(X.Petal_Length,X.Petal_Width,c=colormap[predY],s=40)
+plt.title('KMeans')
+
+# GMM PLOT
+scaler=preprocessing.StandardScaler()
+scaler.fit(X)
+xsa=scaler.transform(X)
+xs=pd.DataFrame(xsa,columns=X.columns)
+gmm=GaussianMixture(n_components=3)
+gmm.fit(xs)
+
+y_cluster_gmm=gmm.predict(xs)
+plt.subplot(1,3,3)
+plt.scatter(X.Petal_Length,X.Petal_Width,c=colormap[y_cluster_gmm],s=40)
+plt.title('GMM Classification')
+
+Output:
+/usr/local/lib/python3.10/dist-packages/sklearn/cluster/_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  warnings.warn(
+Text(0.5, 1.0, 'GMM Classification')
+

@@ -1,0 +1,78 @@
+Program 4
+Aim: Learning the concept of Artificial neural network by applying the Back-Propagation algorithm.
+Description:
+Backpropagation, or backward propagation of errors, is an algorithm that is designed to test for errors working back from output nodes to input nodes. It is an important mathematical tool for improving the accuracy of predictions in data mining and machine learning. Essentially, backpropagation is an algorithm used to calculate derivatives quickly.
+There are two leading types of backpropagation networks:
+1.	Static backpropagation. Static backpropagation is a network developed to map static inputs for static outputs. Static backpropagation networks can solve static classification problems, such as optical character recognition (OCR).
+2.	Recurrent backpropagation. The recurrent backpropagation network is used for fixed-point learning. Recurrent backpropagation activation feeds forward until it reaches a fixed value.
+Algorithm:
+Step 1: Inputs X, arrive through the preconnected path.
+Step 2: The input is modeled using true weights W. Weights are usually chosen randomly.
+Step 3: Calculate the output of each neuron from the input layer to the hidden layer to the output layer.
+Step 4: Calculate the error in the outputs
+Backpropagation Error= Actual Output – Desired Output
+Step 5: From the output layer, go back to the hidden layer to adjust the weights to reduce the error.
+Step 6: Repeat the process until the desired output is achieved.
+
+Program:
+ 
+import numpy as np
+X = np.array(([2, 9], [1, 5], [3, 6]), dtype=float)
+y = np.array(([92], [86], [89]), dtype=float)
+X = X/np.amax(X,axis=0) # maximum of X array longitudinally
+y = y/100
+#Sigmoid Function
+def sigmoid (x):
+  return 1/(1 + np.exp(-x))
+#Derivative of Sigmoid Function
+def derivatives_sigmoid(x):
+  return x * (1 - x)
+#Variable initialization
+epoch=5000 #Setting training iterations
+lr=0.1 #Setting learning rate
+inputlayer_neurons = 2 #number of features in data set
+hiddenlayer_neurons = 3 #number of hidden layers neurons
+output_neurons = 1 #number of neurons at output layer
+#weight and bias initialization
+wh=np.random.uniform(size=(inputlayer_neurons,hiddenlayer_neurons))
+bh=np.random.uniform(size=(1,hiddenlayer_neurons))
+wout=np.random.uniform(size=(hiddenlayer_neurons,output_neurons))
+bout=np.random.uniform(size=(1,output_neurons))
+#draws a random range of numbers uniformly of dim x*y
+for i in range(epoch):
+ #Forward Propogation
+ hinp1=np.dot(X,wh)
+ hinp=hinp1 + bh
+ hlayer_act = sigmoid(hinp)
+ outinp1=np.dot(hlayer_act,wout)
+ outinp= outinp1+ bout
+ output = sigmoid(outinp)
+ #Backpropagation
+ EO = y-output
+ outgrad = derivatives_sigmoid(output)
+ d_output = EO* outgrad
+ EH = d_output.dot(wout.T)
+ #how much hidden layer wts contributed to error
+ hiddengrad = derivatives_sigmoid(hlayer_act)
+ d_hiddenlayer = EH * hiddengrad
+ # dotproduct of nextlayererror and currentlayerop
+ wout += hlayer_act.T.dot(d_output) *lr
+ wh += X.T.dot(d_hiddenlayer) *lr
+print("Input: \n" + str(X))
+print("Actual Output: \n" + str(y))
+print("Predicted Output: \n" ,output)
+
+
+Output:
+Input: 
+[[0.66666667 1.        ]
+ [0.33333333 0.55555556]
+ [1.         0.66666667]]
+Actual Output: 
+[[0.92]
+ [0.86]
+ [0.89]]
+Predicted Output: 
+ [[0.89591615]
+ [0.87528844]
+ [0.8982718 ]]

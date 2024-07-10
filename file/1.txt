@@ -1,0 +1,61 @@
+Program 1:
+Aim: To Implement the FIND-S Algorithm for finding the most specific hypothesis based on given training data which is in the form of CSV file.
+Description:
+The find-S algorithm is a basic concept learning algorithm in machine learning. The find-S algorithm finds the most specific hypothesis that fits all the positive examples. We have to note here that the algorithm considers only those positive training example. The find-S algorithm starts with the most specific hypothesis and generalizes this hypothesis each time it fails to classify an observed positive training data. Hence, the Find-S algorithm moves from the most specific hypothesis to the most general hypothesis. 
+Algorithm:
+1.	Initialize h to the most specific hypothesis in H 
+ 
+2.	For each positive training instance x For each attribute constraint ai in h 
+If the constraint ai is satisfied by x Then do nothing 
+Else replace ai in h by the next more general constraint that is satisfied by x 
+3.	Output hypothesis h 
+Program:
+import pandas as pd
+import numpy as np
+#to read the data in the csv file
+data = pd.read_csv("/content/data1.csv")
+print(data,"n")
+#making an array of all the attributes
+d = np.array(data)[:,:-1]
+print("n The attributes are: ",d)
+#segragating the target that has positive and negative examples
+target = np.array(data)[:,-1]
+print("n The target is: ",target)
+#training function to implement find-s algorithm
+def train(c,t):
+ for i, val in enumerate(t):
+  if val == "Yes":
+    specific_hypothesis = c[i].copy()
+    break
+
+ for i, val in enumerate(c):
+  if t[i] == "Yes":
+    for x in range(len(specific_hypothesis)):
+      if val[x] != specific_hypothesis[x]:
+        specific_hypothesis[x] = '?'
+      else:
+        pass
+
+ return specific_hypothesis
+#obtaining the final hypothesis
+print("n The final hypothesis is:",train(d,target))
+
+Dataset:
+	Time 	Weather 	Temperature 	Company 	Humidity 	Wind 	Goes 	
+	Morning 	Sunny 	Warm 	Yes 	Mild 	Strong 	Yes 	
+	Evening 	Rainy 	Cold 	No 	Mild 	Normal 	No 	
+	Morning 	Sunny 	Moderate 	Yes 	Normal 	Normal 	Yes 	
+	Evening 	Sunny 	Cold 	Yes 	High 	Strong 	Yes 	
+
+Output:
+Time Weather Temperature Company Humidity    Wind Goes
+0  Morning   Sunny        Warm     Yes     Mild  Strong  Yes
+1  Evening   Rainy        Cold      No     Mild  Normal   No
+2  Morning   Sunny    Moderate     Yes   Normal  Normal  Yes
+3  Evening   Sunny        Cold     Yes     High  Strong  Yes n
+n The attributes are:  [['Morning' 'Sunny' 'Warm' 'Yes' 'Mild' 'Strong']
+ ['Evening' 'Rainy' 'Cold' 'No' 'Mild' 'Normal']
+ ['Morning' 'Sunny' 'Moderate' 'Yes' 'Normal' 'Normal']
+ ['Evening' 'Sunny' 'Cold' 'Yes' 'High' 'Strong']]
+n The target is:  ['Yes' 'No' 'Yes' 'Yes']
+n The final hypothesis is: ['?' 'Sunny' '?' 'Yes' '?' '?']

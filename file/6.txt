@@ -1,0 +1,67 @@
+Program 6
+Aim: Finding the Accuracy,Precision and Recall of textual document by implementing the Naïve Bayesian Classifier model.
+Description:
+The Naïve Bayes algorithm is comprised of two words Naïve and Bayes, Which can be described as:
+o	Naïve: It is called Naïve because it assumes that the occurrence of a certain feature is independent of the occurrence of other features. Such as if the fruit is identified on the bases of color, shape, and taste, then red, spherical, and sweet fruit is recognized as an apple. Hence each feature individually contributes to identify that it is an apple without depending on each other.
+o	Bayes: It is called Bayes because it depends on the principle of Bayes' Theorem.
+Bayes' Theorem:
+o	Bayes' theorem is also known as Bayes' Rule or Bayes' law, which is used to determine the probability of a hypothesis with prior knowledge. It depends on the conditional probability.
+o	The formula for Bayes' theorem is given as:
+ 
+Where,
+P(A|B) is Posterior probability: Probability of hypothesis A on the observed event B.
+P(B|A) is Likelihood probability: Probability of the evidence given that the probability of a hypothesis is true.
+Algorithm:
+Working of Naïve Bayes' Classifier can be understood with the help of the below example:
+Suppose we have a dataset of weather conditions and corresponding target variable "Play". So using this dataset we need to decide that whether we should play or not on a particular day according to the weather conditions. So to solve this problem, we need to follow the below steps:
+1.	Convert the given dataset into frequency tables.
+2.	Generate Likelihood table by finding the probabilities of given features.
+3.	Now, use Bayes theorem to calculate the posterior probability.
+Program:
+from sklearn.datasets import fetch_20newsgroups
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn import metrics
+
+news = fetch_20newsgroups()
+print("All Targets\n", news["target_names"])
+
+categories = ['alt.atheism', 'soc.religion.christian', 'comp.graphics', 'sci.med']
+news_train = fetch_20newsgroups(subset='train', categories=categories, shuffle='true')
+news_test = fetch_20newsgroups(subset='test', categories=categories, shuffle='true')
+print("Target Names", news_train.target_names)
+
+text_clf = Pipeline([('vect', TfidfVectorizer()), ('clf', MultinomialNB())])
+text_clf.fit(news_train.data, news_train.target)
+predicted = text_clf.predict(news_test.data)
+
+print("Accuracy", metrics.accuracy_score(news_test.target, predicted))
+
+print(metrics.classification_report(news_test.target, predicted, target_names=news_test.target_names))
+
+print("Confusion Matrix:\n", metrics.confusion_matrix(news_test.target, predicted))
+
+
+Output:
+All Targets
+ ['alt.atheism', 'comp.graphics', 'comp.os.ms-windows.misc', 'comp.sys.ibm.pc.hardware', 'comp.sys.mac.hardware', 'comp.windows.x', 'misc.forsale', 'rec.autos', 'rec.motorcycles', 'rec.sport.baseball', 'rec.sport.hockey', 'sci.crypt', 'sci.electronics', 'sci.med', 'sci.space', 'soc.religion.christian', 'talk.politics.guns', 'talk.politics.mideast', 'talk.politics.misc', 'talk.religion.misc']
+Target Names ['alt.atheism', 'comp.graphics', 'sci.med', 'soc.religion.christian']
+Accuracy 0.8348868175765646
+                       
+
+                           precision    recall  f1-score   support
+           alt.atheism       0.97      0.60      0.74       319
+         comp.graphics       0.96      0.89      0.92       389
+               sci.med       0.97      0.81      0.88       396
+soc.religion.christian       0.65      0.99      0.78       398
+
+              accuracy                           0.83      1502
+             macro avg       0.89      0.82      0.83      1502
+          weighted avg       0.88      0.83      0.84      1502
+
+Confusion Matrix:
+ [[192   2   6 119]
+ [  2 347   4  36]
+ [  2  11 322  61]
+ [  2   2   1 393]]

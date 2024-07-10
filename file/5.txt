@@ -1,0 +1,110 @@
+Program 5
+Aim: Finding the accuracy of a classification model by applying the Naïve Baysian classifier.
+Description:
+The Naïve Bayes classifier is a supervised machine learning algorithm, which is used for classification tasks, like text classification. It is also part of a family of generative learning algorithms, meaning that it seeks to model the distribution of inputs of a given class or category. Unlike discriminative classifiers, like logistic regression, it does not learn which features are most important to differentiate between classes.
+Algorithm:
+Working of Naïve Bayes' Classifier can be understood with the help of the below example:
+Suppose we have a dataset of weather conditions and corresponding target variable "Play". So using this dataset we need to decide that whether we should play or not on a particular day according to the weather conditions. So to solve this problem, we need to follow the below steps:
+1.	Convert the given dataset into frequency tables.
+2.	Generate Likelihood table by finding the probabilities of given features.
+3.	Now, use Bayes theorem to calculate the posterior probability.
+Program:
+import pandas as pd
+from sklearn import tree
+from sklearn.preprocessing import LabelEncoder
+from sklearn.naive_bayes import GaussianNB
+
+# load data from CSV
+data = pd.read_csv('/content/data5.csv')
+print("THe first 5 values of data is :\n",data.head())
+
+# obtain Train data and Train output
+X = data.iloc[:,:-1]
+print("\nThe First 5 values of train data is\n",X.head())
+
+y = data.iloc[:,-1]
+print("\nThe first 5 values of Train output is\n",y.head())
+
+# Convert then in numbers
+le_outlook = LabelEncoder()
+X.Outlook = le_outlook.fit_transform(X.Outlook)
+
+le_Temperature = LabelEncoder()
+X.Temperature = le_Temperature.fit_transform(X.Temperature)
+
+le_Humidity = LabelEncoder()
+X.Humidity = le_Humidity.fit_transform(X.Humidity)
+
+le_Windy = LabelEncoder()
+X.Windy = le_Windy.fit_transform(X.Windy)
+
+print("\nNow the Train data is :\n",X.head())
+
+le_PlayTennis = LabelEncoder()
+y = le_PlayTennis.fit_transform(y)
+print("\nNow the Train output is\n",y)
+
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.20)
+
+classifier = GaussianNB()
+classifier.fit(X_train,y_train)
+
+from sklearn.metrics import accuracy_score
+print("Accuracy is:",accuracy_score(classifier.predict(X_test),y_test))
+
+Dataset:
+         Outlook	Temperature	Humidity	Windy	PlayTennis
+2	Sunny	Hot	High	FALSE	No
+3	Sunny	Hot	High	TRUE	No
+4	Overcast	Hot	High	FALSE	Yes
+5	Rainy	Mild	High	FALSE	Yes
+6	Rainy	Cool	Normal	FALSE	Yes
+7	Rainy	Cool	Normal	TRUE	No
+8	Overcast	Cool	Normal	TRUE	Yes
+9	Sunny	Mild	High	FALSE	No
+10	Sunny	Cool	Normal	FALSE	Yes
+11	Rainy	Mild	Normal	FALSE	Yes
+12	Sunny	Mild	Normal	TRUE	Yes
+13	Overcast	Mild	High	TRUE	Yes
+14	Overcast	Hot	Normal	FALSE	Yes
+15	Rainy	Mild	High	TRUE	No
+
+
+					
+Output:
+THe first 5 values of data is :
+    Outlook Temperature Humidity   Windy  PlayTennis Unnamed: 5
+0        2       Sunny      Hot    High       False         No
+1        3       Sunny      Hot    High        True         No
+2        4    Overcast      Hot    High       False        Yes
+3        5       Rainy     Mild    High       False        Yes
+4        6       Rainy     Cool  Normal       False        Yes
+
+The First 5 values of train data is
+    Outlook Temperature Humidity   Windy  PlayTennis
+0        2       Sunny      Hot    High       False
+1        3       Sunny      Hot    High        True
+2        4    Overcast      Hot    High       False
+3        5       Rainy     Mild    High       False
+4        6       Rainy     Cool  Normal       False
+
+The first 5 values of Train output is
+ 0     No
+1     No
+2    Yes
+3    Yes
+4    Yes
+Name: Unnamed: 5, dtype: object
+
+Now the Train data is :
+    Outlook  Temperature  Humidity  Windy  PlayTennis
+0        0            2         1      0       False
+1        1            2         1      0        True
+2        2            0         1      0       False
+3        3            1         2      0       False
+4        4            1         0      1       False
+
+Now the Train output is
+ [0 0 1 1 1 0 1 0 1 1 1 1 1 0]
+Accuracy is: 0.3333333333333333
